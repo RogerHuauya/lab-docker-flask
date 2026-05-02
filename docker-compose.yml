@@ -1,0 +1,48 @@
+services:
+  flask:
+    build: .
+    ports:
+      - "8080:5000"
+    networks:
+      - public
+      - private
+    env_file:
+      - .env.dev
+    secrets:
+      - pg_password
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    networks:
+      - private
+    environment:
+      POSTGRES_DB: itemsdb
+      POSTGRES_USER: flask_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+    secrets:
+      - pg_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flask_user -d itemsdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+networks:
+  public:
+  private:
+    internal: true
+
+volumes:
+  pgdata:
+
+secrets:
+  pg_password:
+    file: ./pg_password.txt

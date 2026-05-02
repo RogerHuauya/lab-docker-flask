@@ -18,3 +18,7 @@ coverage.xml
 .mypy_cache
 .pytest_cache
 .hypothesis
+pg_password.txt
+.env.dev
+docker-compose.yml
+init.sql
