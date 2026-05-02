@@ -2,7 +2,7 @@ services:
   flask:
     build: .
     ports:
-      - "5001:5000"
+      - "8080:5000"
     networks:
       - public
       - private

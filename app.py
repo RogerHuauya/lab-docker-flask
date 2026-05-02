@@ -34,11 +34,13 @@ def _row_to_dict(row):
 
 
 @app.get("/api/health")
+@app.get("/health")
 def health():
     return jsonify({"status": "healthy", "message": "Flask + PostgreSQL funcionando"})
 
 
 @app.get("/api/items")
+@app.get("/items")
 def list_items():
     with pool.connection() as conn:
         rows = conn.execute(
@@ -48,6 +50,7 @@ def list_items():
 
 
 @app.post("/api/items")
+@app.post("/items")
 def create_item():
     data = request.get_json(force=True) or {}
     name = data.get("name", "").strip()
@@ -64,6 +67,7 @@ def create_item():
 
 
 @app.get("/api/items/<int:item_id>")
+@app.get("/items/<int:item_id>")
 def get_item(item_id):
     with pool.connection() as conn:
         row = conn.execute(
@@ -76,6 +80,7 @@ def get_item(item_id):
 
 
 @app.put("/api/items/<int:item_id>")
+@app.put("/items/<int:item_id>")
 def update_item(item_id):
     data = request.get_json(force=True) or {}
     name = data.get("name", "").strip()
@@ -94,6 +99,7 @@ def update_item(item_id):
 
 
 @app.delete("/api/items/<int:item_id>")
+@app.delete("/items/<int:item_id>")
 def delete_item(item_id):
     with pool.connection() as conn:
         result = conn.execute(
